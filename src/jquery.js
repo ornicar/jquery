@@ -26,9 +26,7 @@ define( [
 	"./event/ajax",
 	"./offset",
 	"./dimensions",
-	"./deprecated",
-	"./exports/amd",
-	"./exports/global"
+	"./exports/min"
 ], function( jQuery ) {
 
 "use strict";
