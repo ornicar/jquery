@@ -176,7 +176,7 @@ module.exports = function( grunt ) {
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
 						"(c) jQuery Foundation | jquery.org/license | " +
-            "hacked for lichess.org */",
+            "hacked for lichess.org on https://github.com/ornicar/jquery/tree/lila */",
 					compress: {
 						"hoist_funs": false,
 						loops: false,
