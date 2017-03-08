@@ -37,40 +37,14 @@ jQuery.fn.extend( {
 		return this;
 	},
 
-	wrapInner: function( html ) {
-		if ( jQuery.isFunction( html ) ) {
-			return this.each( function( i ) {
-				jQuery( this ).wrapInner( html.call( this, i ) );
-			} );
-		}
-
-		return this.each( function() {
-			var self = jQuery( this ),
-				contents = self.contents();
-
-			if ( contents.length ) {
-				contents.wrapAll( html );
-
-			} else {
-				self.append( html );
-			}
-		} );
-	},
-
 	wrap: function( html ) {
 		var isFunction = jQuery.isFunction( html );
 
 		return this.each( function( i ) {
 			jQuery( this ).wrapAll( isFunction ? html.call( this, i ) : html );
 		} );
-	},
-
-	unwrap: function( selector ) {
-		this.parent( selector ).not( "body" ).each( function() {
-			jQuery( this ).replaceWith( this.childNodes );
-		} );
-		return this;
 	}
+
 } );
 
 return jQuery;
