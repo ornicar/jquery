@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2017-03-08T10:18Z
+ * Date: 2017-03-08T10:52Z
  */
 ( function( global, factory ) {
 
@@ -8719,23 +8719,6 @@ jQuery.fn.load = function( url, params, callback ) {
 
 	return this;
 };
-
-
-
-
-// Attach a bunch of functions for handling common AJAX events
-jQuery.each( [
-	"ajaxStart",
-	"ajaxStop",
-	"ajaxComplete",
-	"ajaxError",
-	"ajaxSuccess",
-	"ajaxSend"
-], function( i, type ) {
-	jQuery.fn[ type ] = function( fn ) {
-		return this.on( type, fn );
-	};
-} );
 
 
 

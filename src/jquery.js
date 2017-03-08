@@ -21,7 +21,6 @@ define( [
 	"./ajax/xhr",
 	"./ajax/script",
 	"./ajax/load",
-	"./event/ajax",
 	"./offset",
 	"./dimensions",
 	"./exports/min"
