@@ -4,7 +4,6 @@ define( [
 	"./traversing",
 	"./callbacks",
 	"./deferred",
-	"./deferred/exceptionHook",
 	"./core/ready",
 	"./data",
 	"./queue",
