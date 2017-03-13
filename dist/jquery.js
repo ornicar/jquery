@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2017-03-13T09:08Z
+ * Date: 2017-03-13T10:20Z
  */
 ( function( global, factory ) {
 
@@ -657,6 +657,47 @@ function visible( elem ) {
 	return !!( elem.offsetWidth || elem.offsetHeight || elem.getClientRects().length );
 };
 
+// Implements a subset from:
+// http://api.jquery.com/category/selectors/jquery-selector-extensions/
+//
+// Each filter function receives the current index, all nodes in the
+// considered set, and a value if there were parentheses. The value
+// of `this` is the node currently being considered. The function returns the
+// resulting node(s), null, or undefined.
+//
+// Complex selectors are not supported:
+//   li:has(label:contains("foo")) + li:has(label:contains("bar"))
+//   ul.inner:first > li
+var filters = {
+  visible:  function(){ return visible(this) },
+  hidden:   function(){ return !visible(this) },
+  selected: function(){ return this.selected },
+  checked:  function(){ return this.checked },
+  first:    function(idx){ return idx === 0 },
+  last:     function(idx, nodes){ return idx === nodes.length - 1 },
+  eq:       function(idx, _, value){ return idx === value },
+  contains: function(idx, _, text){ return jQuery(this).text().indexOf(text) > -1 },
+  // has:      function(idx, _, sel){ return zepto.qsa(this, sel).length }
+}
+
+var filterRe = new RegExp('(.*):(\\w+)(?:\\(([^)]+)\\))?$\\s*');
+
+function process(sel, fn) {
+  // quote the hash in `a[href^=#]` expression
+  sel = sel.replace(/=#\]/g, '="#"]')
+  var filter, arg, match = filterRe.exec(sel)
+  if (match && match[2] in filters) {
+    filter = filters[match[2]], arg = match[3]
+    sel = match[1]
+    if (arg) {
+      var num = Number(arg)
+      if (isNaN(num)) arg = arg.replace(/^["']|["']$/g, '')
+      else arg = num
+    }
+  }
+  return fn(sel, filter, arg)
+}
+
 jQuery.extend( {
 	uniqueSort: uniqueSort,
 	unique: uniqueSort,
@@ -678,17 +719,22 @@ jQuery.extend( {
 			return [];
 		}
 
-		if ( seed ) {
-			while ( ( elem = seed[ i++ ] ) ) {
-				if ( jQuery.find.matchesSelector( elem, selector ) ) {
-					results.push( elem );
-				}
-			}
-		} else {
-			jQuery.merge( results, context.querySelectorAll( selector ) );
-		}
+    return process(selector, function(sel, filter, arg){
 
-		return results;
+      if ( seed ) {
+        while ( ( elem = seed[ i++ ] ) ) {
+          if ( jQuery.find.matchesSelector( elem, sel ) ) {
+            results.push( elem );
+          }
+        }
+      } else {
+        var r = context.querySelectorAll( sel );
+        if (filter) r = Array.prototype.filter.call(r, function(n, i) { return filter.call(n, i, results, arg); })
+        jQuery.merge( results, r)
+      }
+
+      return results;
+    });
 	},
 	text: function( elem ) {
 		var node,
@@ -754,6 +800,9 @@ jQuery.extend( jQuery.find, {
 		return value !== undefined ? value : elem.getAttribute( name );
 	}
 } );
+
+// deprecated - for jquery UI
+jQuery.expr[ ":" ] = [];
 
 
 
