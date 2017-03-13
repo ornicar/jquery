@@ -10,7 +10,6 @@ define( [
 	"./manipulation/getAll",
 	"./manipulation/setGlobalEval",
 	"./manipulation/buildFragment",
-	"./manipulation/support",
 
 	"./data/var/dataPriv",
 	"./data/var/dataUser",
@@ -23,7 +22,7 @@ define( [
 	"./event"
 ], function( jQuery, concat, push, access,
 	rcheckableType, rtagName, rscriptType,
-	wrapMap, getAll, setGlobalEval, buildFragment, support,
+	wrapMap, getAll, setGlobalEval, buildFragment,
 	dataPriv, dataUser, acceptData, DOMEval ) {
 
 "use strict";
@@ -108,20 +107,6 @@ function cloneCopyEvent( src, dest ) {
 	}
 }
 
-// Fix IE bugs, see support tests
-function fixInput( src, dest ) {
-	var nodeName = dest.nodeName.toLowerCase();
-
-	// Fails to persist the checked state of a cloned checkbox or radio button.
-	if ( nodeName === "input" && rcheckableType.test( src.type ) ) {
-		dest.checked = src.checked;
-
-	// Fails to return the selected option to the default selected state when cloning options
-	} else if ( nodeName === "input" || nodeName === "textarea" ) {
-		dest.defaultValue = src.defaultValue;
-	}
-}
-
 function domManip( collection, args, callback, ignored ) {
 
 	// Flatten any nested arrays
@@ -135,14 +120,10 @@ function domManip( collection, args, callback, ignored ) {
 		isFunction = jQuery.isFunction( value );
 
 	// We can't cloneNode fragments that contain checked, in WebKit
-	if ( isFunction ||
-			( l > 1 && typeof value === "string" &&
-				!support.checkClone && rchecked.test( value ) ) ) {
+	if ( isFunction) {
 		return collection.each( function( index ) {
 			var self = collection.eq( index );
-			if ( isFunction ) {
-				args[ 0 ] = value.call( this, index, self.html() );
-			}
+      args[ 0 ] = value.call( this, index, self.html() );
 			domManip( self, args, callback, ignored );
 		} );
 	}
@@ -242,19 +223,6 @@ jQuery.extend( {
 		var i, l, srcElements, destElements,
 			clone = elem.cloneNode( true ),
 			inPage = jQuery.contains( elem.ownerDocument, elem );
-
-		// Fix IE cloning issues
-		if ( !support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) &&
-				!jQuery.isXMLDoc( elem ) ) {
-
-			// We eschew Sizzle here for performance reasons: https://jsperf.com/getall-vs-sizzle/2
-			destElements = getAll( clone );
-			srcElements = getAll( elem );
-
-			for ( i = 0, l = srcElements.length; i < l; i++ ) {
-				fixInput( srcElements[ i ], destElements[ i ] );
-			}
-		}
 
 		// Copy the events from the original to the clone
 		if ( dataAndEvents ) {

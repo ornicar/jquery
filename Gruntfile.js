@@ -230,13 +230,13 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "default", [
-		runIfNewNode( "eslint:dev" ),
+		// runIfNewNode( "eslint:dev" ),
 		"build:*:*",
 		"uglify",
 		"remove_map_comment",
 		"dist:*",
-		runIfNewNode( "eslint:dist" ),
-		"test:fast",
+		// runIfNewNode( "eslint:dist" ),
+		// "test:fast",
 		"compare_size"
 	] );
 };
