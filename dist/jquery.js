@@ -9,7 +9,7 @@
  * Released under the MIT license
  * https://jquery.org/license
  *
- * Date: 2017-03-13T10:20Z
+ * Date: 2017-03-26T15:59Z
  */
 ( function( global, factory ) {
 
@@ -723,8 +723,8 @@ jQuery.extend( {
 
       if ( seed ) {
         while ( ( elem = seed[ i++ ] ) ) {
-          if ( jQuery.find.matchesSelector( elem, sel ) ) {
-            results.push( elem );
+          if ( !sel || jQuery.find.matchesSelector( elem, sel ) ) {
+            if (!filter || filter.call(elem, null, results, arg)) results.push( elem );
           }
         }
       } else {
@@ -883,10 +883,6 @@ jQuery.filter = function( expr, elems, not ) {
 
 	if ( not ) {
 		expr = ":not(" + expr + ")";
-	}
-
-	if ( elems.length === 1 && elem.nodeType === 1 ) {
-		return jQuery.find.matchesSelector( elem, expr ) ? [ elem ] : [];
 	}
 
 	return jQuery.find.matches( expr, jQuery.grep( elems, function( elem ) {

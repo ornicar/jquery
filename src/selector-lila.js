@@ -205,8 +205,8 @@ jQuery.extend( {
 
       if ( seed ) {
         while ( ( elem = seed[ i++ ] ) ) {
-          if ( jQuery.find.matchesSelector( elem, sel ) ) {
-            results.push( elem );
+          if ( !sel || jQuery.find.matchesSelector( elem, sel ) ) {
+            if (!filter || filter.call(elem, null, results, arg)) results.push( elem );
           }
         }
       } else {

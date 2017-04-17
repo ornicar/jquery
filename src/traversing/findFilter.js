@@ -50,10 +50,6 @@ jQuery.filter = function( expr, elems, not ) {
 		expr = ":not(" + expr + ")";
 	}
 
-	if ( elems.length === 1 && elem.nodeType === 1 ) {
-		return jQuery.find.matchesSelector( elem, expr ) ? [ elem ] : [];
-	}
-
 	return jQuery.find.matches( expr, jQuery.grep( elems, function( elem ) {
 		return elem.nodeType === 1;
 	} ) );
