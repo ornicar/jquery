@@ -29,9 +29,6 @@ define( [
 		var divStyle = window.getComputedStyle( div );
 		pixelPositionVal = divStyle.top !== "1%";
 
-		// Support: Android 4.0 - 4.3 only, Firefox <=3 - 44
-		reliableMarginLeftVal = divStyle.marginLeft === "12px";
-
 		// Support: Android 4.0 - 4.3 only
 		// Some styles come back with percentage values, even though they shouldn't
 		div.style.marginRight = "60%";
@@ -76,10 +73,6 @@ define( [
 		pixelMarginRight: function() {
 			computeStyleTests();
 			return pixelMarginRightVal;
-		},
-		reliableMarginLeft: function() {
-			computeStyleTests();
-			return reliableMarginLeftVal;
 		}
 	} );
 } )();
