@@ -61,9 +61,7 @@
   "scripts": {
     "build": "npm install && grunt",
     "start": "grunt watch",
-    "test": "grunt && grunt test:slow",
-    "precommit": "grunt lint:newer",
-    "commitmsg": "node node_modules/commitplease"
+    "test": "grunt && grunt test:slow"
   },
   "commitplease": {
     "nohook": true,
