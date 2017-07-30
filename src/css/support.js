@@ -41,11 +41,6 @@ define( [
 		// Detect misreporting of content dimensions for box-sizing:border-box elements
 		boxSizingReliableVal = divStyle.width === "36px";
 
-		// Support: IE 9 only
-		// Detect overflow:scroll screwiness (gh-3699)
-		div.style.position = "absolute";
-		scrollboxSizeVal = div.offsetWidth === 36 || "absolute";
-
 		documentElement.removeChild( container );
 
 		// Nullify the div so it wouldn't be stored in the memory and
@@ -53,7 +48,7 @@ define( [
 		div = null;
 	}
 
-	var pixelPositionVal, boxSizingReliableVal, scrollboxSizeVal, pixelMarginRightVal,
+	var pixelPositionVal, boxSizingReliableVal, pixelMarginRightVal,
 		reliableMarginLeftVal,
 		container = document.createElement( "div" ),
 		div = document.createElement( "div" );
@@ -85,10 +80,6 @@ define( [
 		reliableMarginLeft: function() {
 			computeStyleTests();
 			return reliableMarginLeftVal;
-		},
-		scrollboxSize: function() {
-			computeStyleTests();
-			return scrollboxSizeVal;
 		}
 	} );
 } )();
