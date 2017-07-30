@@ -110,3 +110,76 @@ QUnit.test( "jQuery.parseJSON", function( assert ) {
 
 	assert.strictEqual( jQuery.parseJSON( [ 0 ] ), 0, "Input cast to string" );
 } );
+
+QUnit.test( "jQuery.isArray", function( assert ) {
+	assert.expect( 1 );
+
+	assert.strictEqual( jQuery.isArray, Array.isArray, "Array.isArray equals jQuery.isArray" );
+} );
+
+QUnit.test( "jQuery.nodeName", function( assert ) {
+	assert.expect( 8 );
+
+	assert.strictEqual( typeof jQuery.nodeName, "function", "jQuery.nodeName is a function" );
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "div" ), "div" ),
+		true,
+		"Basic usage (true)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "div" ), "span" ),
+		false,
+		"Basic usage (false)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "div" ), "DIV" ),
+		true,
+		"Ignores case in the name parameter"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "section" ), "section" ),
+		true,
+		"Works on HTML5 tags (true)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "section" ), "article" ),
+		false,
+		"Works on HTML5 tags (false)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "custom-element" ), "custom-element" ),
+		true,
+		"Works on custom elements (true)"
+	);
+
+	assert.strictEqual(
+		jQuery.nodeName( document.createElement( "custom-element" ), "my-element" ),
+		false,
+		"Works on custom elements (true)"
+	);
+} );
+
+QUnit.test( "jQuery.isWindow", function( assert ) {
+	assert.expect( 14 );
+
+	assert.ok( jQuery.isWindow( window ), "window" );
+	assert.ok( jQuery.isWindow( document.getElementsByTagName( "iframe" )[ 0 ].contentWindow ), "iframe.contentWindow" );
+	assert.ok( !jQuery.isWindow(), "empty" );
+	assert.ok( !jQuery.isWindow( null ), "null" );
+	assert.ok( !jQuery.isWindow( undefined ), "undefined" );
+	assert.ok( !jQuery.isWindow( document ), "document" );
+	assert.ok( !jQuery.isWindow( document.documentElement ), "documentElement" );
+	assert.ok( !jQuery.isWindow( "" ), "string" );
+	assert.ok( !jQuery.isWindow( 1 ), "number" );
+	assert.ok( !jQuery.isWindow( true ), "boolean" );
+	assert.ok( !jQuery.isWindow( {} ), "object" );
+	assert.ok( !jQuery.isWindow( { setInterval: function() {} } ), "fake window" );
+	assert.ok( !jQuery.isWindow( /window/ ), "regexp" );
+	assert.ok( !jQuery.isWindow( function() {} ), "function" );
+} );

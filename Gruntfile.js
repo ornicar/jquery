@@ -13,15 +13,7 @@ module.exports = function( grunt ) {
 	}
 
 	var fs = require( "fs" ),
-		gzip = require( "gzip-js" ),
-		oldNode = /^v0\./.test( process.version );
-
-	// Support: Node.js <4
-	// Skip running tasks that dropped support for Node.js 0.10 & 0.12
-	// in those Node versions.
-	function runIfNewNode( task ) {
-		return oldNode ? "print_old_node_message:" + task : task;
-	}
+		gzip = require( "gzip-js" );
 
 	if ( !grunt.option( "filename" ) ) {
 		grunt.option( "filename", "jquery.js" );
@@ -167,11 +159,10 @@ module.exports = function( grunt ) {
 				options: {
 					preserveComments: false,
 					sourceMap: true,
-					ASCIIOnly: true,
 					sourceMapName:
 						"dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
 					report: "min",
-					beautify: {
+					output: {
 						"ascii_only": true
 					},
 					banner: "/*! jQuery v<%= pkg.version %> | " +
@@ -180,7 +171,12 @@ module.exports = function( grunt ) {
 					compress: {
 						"hoist_funs": false,
 						loops: false,
-						unused: false
+						unused: false,
+
+						// Support: IE <11
+						// typeofs transformation is unsafe for IE9-10
+						// See https://github.com/mishoo/UglifyJS2/issues/2198
+						typeofs: false
 					}
 				}
 			}
@@ -188,32 +184,32 @@ module.exports = function( grunt ) {
 	} );
 
 	// Load grunt tasks from NPM packages
-	// Support: Node.js <4
-	// Don't load the eslint task in old Node.js, it won't parse.
-	require( "load-grunt-tasks" )( grunt, {
-		pattern: oldNode ? [ "grunt-*", "!grunt-eslint" ] : [ "grunt-*" ]
-	} );
+	require( "load-grunt-tasks" )( grunt );
 
 	// Integrate jQuery specific tasks
 	grunt.loadTasks( "build/tasks" );
 
-	grunt.registerTask( "print_old_node_message", function() {
-		var task = [].slice.call( arguments ).join( ":" );
-		grunt.log.writeln( "Old Node.js detected, running the task \"" + task + "\" skipped..." );
-	} );
-
 	grunt.registerTask( "lint", [
 		"jsonlint",
-		runIfNewNode( "eslint" )
+
+		// Running the full eslint task without breaking it down to targets
+		// would run the dist target first which would point to errors in the built
+		// file, making it harder to fix them. We want to check the built file only
+		// if we already know the source files pass the linter.
+		"eslint:dev",
+		"eslint:dist"
 	] );
 
 	grunt.registerTask( "lint:newer", [
 		"newer:jsonlint",
-		runIfNewNode( "newer:eslint" )
+
+		// Don't replace it with just the task; see the above comment.
+		"newer:eslint:dev",
+		"newer:eslint:dist"
 	] );
 
-	grunt.registerTask( "test:fast", runIfNewNode( "node_smoke_tests" ) );
-	grunt.registerTask( "test:slow", runIfNewNode( "promises_aplus_tests" ) );
+	grunt.registerTask( "test:fast", "node_smoke_tests" );
+	grunt.registerTask( "test:slow", "promises_aplus_tests" );
 
 	grunt.registerTask( "test", [
 		"test:fast",
@@ -222,7 +218,7 @@ module.exports = function( grunt ) {
 
 	grunt.registerTask( "dev", [
 		"build:*:*",
-		runIfNewNode( "newer:eslint:dev" ),
+		"newer:eslint:dev",
 		"newer:uglify",
 		"remove_map_comment",
 		"dist:*",
@@ -230,12 +226,12 @@ module.exports = function( grunt ) {
 	] );
 
 	grunt.registerTask( "default", [
-		// runIfNewNode( "eslint:dev" ),
+		// "eslint:dev",
 		"build:*:*",
 		"uglify",
 		"remove_map_comment",
 		"dist:*",
-		// runIfNewNode( "eslint:dist" ),
+		// "eslint:dist",
 		// "test:fast",
 		"compare_size"
 	] );
