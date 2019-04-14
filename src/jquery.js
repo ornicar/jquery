@@ -10,7 +10,6 @@ define( [
 	"./attributes",
 	"./event",
 	"./manipulation",
-	"./manipulation/_evalUrl",
 	"./wrap",
 	"./css",
 	"./serialize",

@@ -323,18 +323,15 @@ jQuery.extend( {
 			"*": allTypes,
 			text: "text/plain",
 			html: "text/html",
-			xml: "application/xml, text/xml",
 			json: "application/json, text/javascript"
 		},
 
 		contents: {
-			xml: /\bxml\b/,
 			html: /\bhtml/,
 			json: /\bjson\b/
 		},
 
 		responseFields: {
-			xml: "responseXML",
 			text: "responseText",
 			json: "responseJSON"
 		},

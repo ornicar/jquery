@@ -96,12 +96,6 @@ jQuery.fn.extend( {
 			)
 		);
 	},
-
-	addBack: function( selector ) {
-		return this.add( selector == null ?
-			this.prevObject : this.prevObject.filter( selector )
-		);
-	}
 } );
 
 function sibling( cur, dir ) {
@@ -147,13 +141,6 @@ jQuery.each( {
 	contents: function( elem ) {
 		if ( typeof elem.contentDocument !== "undefined" ) {
 			return elem.contentDocument;
-		}
-
-		// Support: IE 9 - 11 only, iOS 7 only, Android Browser <=4.3 only
-		// Treat the template element as a regular one in browsers that
-		// don't support it.
-		if ( nodeName( elem, "template" ) ) {
-			elem = elem.content || elem;
 		}
 
 		return jQuery.merge( [], elem.childNodes );
