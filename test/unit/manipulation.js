@@ -1,5 +1,5 @@
 QUnit.module( "manipulation", {
-	teardown: moduleTeardown
+	afterEach: moduleTeardown
 } );
 
 // Ensure that an extended Array prototype doesn't break jQuery
@@ -1300,7 +1300,7 @@ function testReplaceWith( val, assert ) {
 
 	$div = jQuery( "<div class='replacewith'></div>" ).appendTo( "#qunit-fixture" );
 	$div.replaceWith( val( "<div class='replacewith'></div><script>" +
-		"equal( jQuery('.replacewith').length, 1, 'Check number of elements in page.' );" +
+		"QUnit.assert.equal( jQuery('.replacewith').length, 1, 'Check number of elements in page.' );" +
 		"</script>" ) );
 
 	jQuery( "#qunit-fixture" ).append( "<div id='replaceWith'></div>" );
@@ -1415,7 +1415,7 @@ QUnit.test( "jQuery.clone() (#8017)", function( assert ) {
 
 	assert.expect( 2 );
 
-	assert.ok( jQuery.clone && jQuery.isFunction( jQuery.clone ), "jQuery.clone() utility exists and is a function." );
+	assert.ok( jQuery.clone && typeof jQuery.clone === "function", "jQuery.clone() utility exists and is a function." );
 
 	var main = jQuery( "#qunit-fixture" )[ 0 ],
 		clone = jQuery.clone( main );
@@ -1754,15 +1754,15 @@ function testHtml( valueObj, assert ) {
 
 	tmp = fixture.html(
 		valueObj( [
-			"<script type='something/else'>ok( false, 'evaluated: non-script' );</script>",
-			"<script type='text/javascript'>ok( true, 'evaluated: text/javascript' );</script>",
-			"<script type='text/ecmascript'>ok( true, 'evaluated: text/ecmascript' );</script>",
-			"<script>ok( true, 'evaluated: no type' );</script>",
+			"<script type='something/else'>QUnit.assert.ok( false, 'evaluated: non-script' );</script>",
+			"<script type='text/javascript'>QUnit.assert.ok( true, 'evaluated: text/javascript' );</script>",
+			"<script type='text/ecmascript'>QUnit.assert.ok( true, 'evaluated: text/ecmascript' );</script>",
+			"<script>QUnit.assert.ok( true, 'evaluated: no type' );</script>",
 			"<div>",
-				"<script type='something/else'>ok( false, 'evaluated: inner non-script' );</script>",
-				"<script type='text/javascript'>ok( true, 'evaluated: inner text/javascript' );</script>",
-				"<script type='text/ecmascript'>ok( true, 'evaluated: inner text/ecmascript' );</script>",
-				"<script>ok( true, 'evaluated: inner no type' );</script>",
+				"<script type='something/else'>QUnit.assert.ok( false, 'evaluated: inner non-script' );</script>",
+				"<script type='text/javascript'>QUnit.assert.ok( true, 'evaluated: inner text/javascript' );</script>",
+				"<script type='text/ecmascript'>QUnit.assert.ok( true, 'evaluated: inner text/ecmascript' );</script>",
+				"<script>QUnit.assert.ok( true, 'evaluated: inner no type' );</script>",
 			"</div>"
 		].join( "" ) )
 	).find( "script" );
@@ -1770,19 +1770,19 @@ function testHtml( valueObj, assert ) {
 	assert.equal( tmp[ 0 ].type, "something/else", "Non-evaluated type." );
 	assert.equal( tmp[ 1 ].type, "text/javascript", "Evaluated type." );
 
-	fixture.html( valueObj( "<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>" ) );
-	fixture.html( valueObj( "<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>" ) );
-	fixture.html( valueObj( "<script type='text/javascript'>ok( true, 'Injection of identical script' );</script>" ) );
-	fixture.html( valueObj( "foo <form><script type='text/javascript'>ok( true, 'Injection of identical script (#975)' );</script></form>" ) );
+	fixture.html( valueObj( "<script type='text/javascript'>QUnit.assert.ok( true, 'Injection of identical script' );</script>" ) );
+	fixture.html( valueObj( "<script type='text/javascript'>QUnit.assert.ok( true, 'Injection of identical script' );</script>" ) );
+	fixture.html( valueObj( "<script type='text/javascript'>QUnit.assert.ok( true, 'Injection of identical script' );</script>" ) );
+	fixture.html( valueObj( "foo <form><script type='text/javascript'>QUnit.assert.ok( true, 'Injection of identical script (#975)' );</script></form>" ) );
 
 	jQuery.scriptorder = 0;
 	fixture.html( valueObj( [
 		"<script>",
-			"equal( jQuery('#scriptorder').length, 1,'Execute after html' );",
-			"equal( jQuery.scriptorder++, 0, 'Script is executed in order' );",
+			"QUnit.assert.equal( jQuery('#scriptorder').length, 1,'Execute after html' );",
+			"QUnit.assert.equal( jQuery.scriptorder++, 0, 'Script is executed in order' );",
 		"</script>",
-		"<span id='scriptorder'><script>equal( jQuery.scriptorder++, 1, 'Script (nested) is executed in order');</script></span>",
-		"<script>equal( jQuery.scriptorder++, 2, 'Script (unnested) is executed in order' );</script>"
+		"<span id='scriptorder'><script>QUnit.assert.equal( jQuery.scriptorder++, 1, 'Script (nested) is executed in order');</script></span>",
+		"<script>QUnit.assert.equal( jQuery.scriptorder++, 2, 'Script (unnested) is executed in order' );</script>"
 	].join( "" ) ) );
 
 	fixture.html( valueObj( fixture.text() ) );
@@ -1795,6 +1795,64 @@ QUnit.test( "html(String|Number)", function( assert ) {
 
 QUnit.test( "html(Function)", function( assert ) {
 	testHtml( manipulationFunctionReturningObj, assert  );
+} );
+
+QUnit[
+	// Support: Edge 16-18+
+	// Edge sometimes doesn't execute module scripts so skip the test there.
+	( QUnit.moduleTypeSupported && !/edge\//i.test( navigator.userAgent ) ) ?
+		"test" :
+		"skip"
+]( "html(script type module)", function( assert ) {
+	assert.expect( 4 );
+	var done = assert.async(),
+		$fixture = jQuery( "#qunit-fixture" );
+
+	$fixture.html(
+		[
+			"<script type='module'>QUnit.assert.ok( true, 'evaluated: module' );</script>",
+			"<script type='module' src='" + url( "module.js" ) + "'></script>",
+			"<div>",
+				"<script type='module'>QUnit.assert.ok( true, 'evaluated: inner module' );</script>",
+				"<script type='module' src='" + url( "inner_module.js" ) + "'></script>",
+			"</div>"
+		].join( "" )
+	);
+
+	// Allow asynchronous script execution to generate assertions
+	setTimeout( function() {
+		done();
+	}, 1000 );
+} );
+
+QUnit[
+	// Support: IE 9-11 only, Android 4.0-4.4 only, iOS 7-10 only
+	// `nomodule` scripts should be executed by legacy browsers only.
+	// iOS 10 supports `<script type="module">` but doesn't support the nomodule attribute
+	// so let's skip it here; sites supporting it must handle `nomodule` in a custom way anyway.
+	!/iphone os 10_/i.test( navigator.userAgent ) ?
+		"test" :
+		"skip"
+]( "html(script nomodule)", function( assert ) {
+	assert.expect( QUnit.moduleTypeSupported ? 0 : 4 );
+	var done = assert.async(),
+		$fixture = jQuery( "#qunit-fixture" );
+
+	$fixture.html(
+		[
+			"<script nomodule>QUnit.assert.ok( !QUnit.moduleTypeSupported, 'evaluated: nomodule script' );</script>",
+			"<script nomodule src='" + url( "nomodule.js" ) + "'></script>",
+			"<div>",
+				"<script nomodule>QUnit.assert.ok( !QUnit.moduleTypeSupported, 'evaluated: inner nomodule script' );</script>",
+				"<script nomodule src='" + url( "inner_nomodule.js" ) + "'></script>",
+			"</div>"
+		].join( "" )
+	);
+
+	// Allow asynchronous script execution to generate assertions
+	setTimeout( function() {
+		done();
+	}, 1000 );
 } );
 
 QUnit.test( "html(Function) with incoming value -- direct selection", function( assert ) {
@@ -2215,7 +2273,7 @@ QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9
 	jQuery( [
 		"<script type='text/javascript'>",
 		"<!--",
-		"ok( true, '<!-- handled' );",
+		"QUnit.assert.ok( true, '<!-- handled' );",
 		"//-->",
 		"</script>"
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
@@ -2223,7 +2281,7 @@ QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9
 	jQuery( [
 		"<script type='text/javascript'>",
 		"<![CDATA[",
-		"ok( true, '<![CDATA[ handled' );",
+		"QUnit.assert.ok( true, '<![CDATA[ handled' );",
 		"//]]>",
 		"</script>"
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
@@ -2231,7 +2289,7 @@ QUnit.test( "domManip executes scripts containing html comments or CDATA (trac-9
 	jQuery( [
 		"<script type='text/javascript'>",
 		"<!--//--><![CDATA[//><!--",
-		"ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
+		"QUnit.assert.ok( true, '<!--//--><![CDATA[//><!-- (Drupal case) handled' );",
 		"//--><!]]>",
 		"</script>"
 	].join( "\n" ) ).appendTo( "#qunit-fixture" );
@@ -2360,13 +2418,15 @@ QUnit.test( "Ensure oldIE creates a new set on appendTo (#8894)", function( asse
 	assert.strictEqual( jQuery( "<p/>" ).appendTo( "<div/>" ).end().length, jQuery( "<p>test</p>" ).appendTo( "<div/>" ).end().length, "Elements created with createElement and with createDocumentFragment should be treated alike" );
 } );
 
-QUnit.asyncTest( "html() - script exceptions bubble (#11743)", 2, function( assert ) {
-	var onerror = window.onerror;
+QUnit.test( "html() - script exceptions bubble (#11743)", function( assert ) {
+	assert.expect( 2 );
+	var done = assert.async(),
+		onerror = window.onerror;
 
 	setTimeout( function() {
 		window.onerror = onerror;
 
-		QUnit.start();
+		done();
 	}, 1000 );
 
 	window.onerror = function() {
@@ -2377,7 +2437,7 @@ QUnit.asyncTest( "html() - script exceptions bubble (#11743)", 2, function( asse
 				assert.ok( true, "Exception thrown in remote script" );
 			};
 
-			jQuery( "#qunit-fixture" ).html( "<script src='data/badcall.js'></script>" );
+			jQuery( "#qunit-fixture" ).html( "<script src='" + baseURL + "badcall.js'></script>" );
 			assert.ok( true, "Exception ignored" );
 		} else {
 			assert.ok( true, "No jQuery.ajax" );
@@ -2435,15 +2495,15 @@ QUnit.test( "script evaluation (#11795)", function( assert ) {
 
 	objGlobal.ok = notOk;
 	scriptsIn = jQuery( [
-		"<script type='something/else'>ok( false, 'evaluated: non-script' );</script>",
-		"<script type='text/javascript'>ok( true, 'evaluated: text/javascript' );</script>",
-		"<script type='text/ecmascript'>ok( true, 'evaluated: text/ecmascript' );</script>",
-		"<script>ok( true, 'evaluated: no type' );</script>",
+		"<script type='something/else'>QUnit.assert.ok( false, 'evaluated: non-script' );</script>",
+		"<script type='text/javascript'>QUnit.assert.ok( true, 'evaluated: text/javascript' );</script>",
+		"<script type='text/ecmascript'>QUnit.assert.ok( true, 'evaluated: text/ecmascript' );</script>",
+		"<script>QUnit.assert.ok( true, 'evaluated: no type' );</script>",
 		"<div>",
-			"<script type='something/else'>ok( false, 'evaluated: inner non-script' );</script>",
-			"<script type='text/javascript'>ok( true, 'evaluated: inner text/javascript' );</script>",
-			"<script type='text/ecmascript'>ok( true, 'evaluated: inner text/ecmascript' );</script>",
-			"<script>ok( true, 'evaluated: inner no type' );</script>",
+			"<script type='something/else'>QUnit.assert.ok( false, 'evaluated: inner non-script' );</script>",
+			"<script type='text/javascript'>QUnit.assert.ok( true, 'evaluated: inner text/javascript' );</script>",
+			"<script type='text/ecmascript'>QUnit.assert.ok( true, 'evaluated: inner text/ecmascript' );</script>",
+			"<script>QUnit.assert.ok( true, 'evaluated: inner no type' );</script>",
 		"</div>"
 	].join( "" ) );
 	scriptsIn.appendTo( jQuery( "<div class='detached'/>" ) );
@@ -2463,7 +2523,7 @@ QUnit.test( "script evaluation (#11795)", function( assert ) {
 
 	if ( jQuery.ajax ) {
 		Globals.register( "testBar" );
-		jQuery( "#qunit-fixture" ).append( "<script src='" + url( "data/testbar.php" ) + "'/>" );
+		jQuery( "#qunit-fixture" ).append( "<script src='" + url( "mock.php?action=testbar" ) + "'/>" );
 		assert.strictEqual( window.testBar, "bar", "Global script evaluation" );
 	} else {
 		assert.ok( true, "No jQuery.ajax" );
@@ -2750,7 +2810,23 @@ QUnit.test( "Make sure tr is not appended to the wrong tbody (gh-3439)", functio
 	assert.strictEqual( htmlOut, htmlExpected );
 } );
 
-QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
+QUnit.test( "Make sure tags with single-character names are found (gh-4124)", function( assert ) {
+	assert.expect( 1 );
+
+	var htmlOut,
+		htmlIn = "<p>foo<!--<td>--></p>",
+		$el = jQuery( "<div/>" );
+
+	$el.html( htmlIn );
+
+	// Lowercase and replace spaces to remove possible browser inconsistencies
+	htmlOut = $el[ 0 ].innerHTML.toLowerCase().replace( /\s/g, "" );
+
+	assert.strictEqual( htmlOut, htmlIn );
+} );
+
+QUnit.test( "Insert script with data-URI (gh-1887)", function( assert ) {
+	assert.expect( 1 );
 	Globals.register( "testFoo" );
 	Globals.register( "testSrcFoo" );
 
@@ -2775,3 +2851,91 @@ QUnit.test( "Insert script with data-URI (gh-1887)", 1, function( assert ) {
 		done();
 	}, 100 );
 } );
+
+QUnit.test( "Ignore content from unsuccessful responses (gh-4126)", function( assert ) {
+	assert.expect( 1 );
+
+	var globalEval = jQuery.globalEval;
+	jQuery.globalEval = function( code ) {
+		assert.ok( false, "no attempt to evaluate code from an unsuccessful response" );
+	};
+
+	try {
+		jQuery( "#qunit-fixture" ).append(
+			"<script src='" + url( "mock.php?action=error" ) + "'/>" );
+		assert.ok( true, "no error thrown from embedding script with unsuccessful-response src" );
+	} catch ( e ) {
+		throw e;
+	} finally {
+		jQuery.globalEval = globalEval;
+	}
+} );
+
+testIframe(
+	"Check if CSP nonce is preserved",
+	"mock.php?action=cspNonce",
+	function( assert, jQuery, window, document ) {
+		var done = assert.async();
+
+		assert.expect( 1 );
+
+		supportjQuery.get( baseURL + "support/csp.log" ).done( function( data ) {
+			assert.equal( data, "", "No log request should be sent" );
+			supportjQuery.get( baseURL + "mock.php?action=cspClean" ).done( done );
+		} );
+	},
+
+	// Support: Edge 18+, iOS 7-9 only, Android 4.0-4.4 only
+	// Edge doesn't support nonce in non-inline scripts.
+	// See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
+	// Old iOS & Android Browser versions support script-src but not nonce, making this test
+	// impossible to run. Browsers not supporting CSP at all are not a problem as they'll skip
+	// script-src restrictions completely.
+	QUnit[ /\bedge\/|iphone os [789]|android 4\./i.test( navigator.userAgent ) ? "skip" : "test" ]
+);
+
+testIframe(
+    "Check if CSP nonce is preserved for external scripts with src attribute",
+    "mock.php?action=cspNonce&test=external",
+    function( assert, jQuery, window, document ) {
+        var done = assert.async();
+
+        assert.expect( 1 );
+
+        supportjQuery.get( baseURL + "support/csp.log" ).done( function( data ) {
+            assert.equal( data, "", "No log request should be sent" );
+            supportjQuery.get( baseURL + "mock.php?action=cspClean" ).done( done );
+        } );
+    },
+
+    // Support: Edge 18+, iOS 7-9 only, Android 4.0-4.4 only
+    // Edge doesn't support nonce in non-inline scripts.
+    // See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
+    // Old iOS & Android Browser versions support script-src but not nonce, making this test
+    // impossible to run. Browsers not supporting CSP at all are not a problem as they'll skip
+    // script-src restrictions completely.
+    QUnit[ /\bedge\/|iphone os [789]|android 4\./i.test( navigator.userAgent ) ? "skip" : "test" ]
+);
+
+testIframe(
+	"jQuery.globalEval supports nonce",
+	"mock.php?action=cspNonce&test=globaleval",
+	function( assert, jQuery, window, document ) {
+		var done = assert.async();
+
+		assert.expect( 1 );
+
+		supportjQuery.get( baseURL + "support/csp.log" ).done( function( data ) {
+			assert.equal( data, "", "No log request should be sent" );
+			supportjQuery.get( baseURL + "mock.php?action=cspClean" ).done( done );
+		} );
+	},
+
+	// Support: Edge 18+, iOS 7-9 only, Android 4.0-4.4 only
+	// Edge doesn't support nonce in non-inline scripts.
+	// See https://developer.microsoft.com/en-us/microsoft-edge/platform/issues/13246371/
+	// Old iOS & Android Browser versions support script-src but not nonce, making this test
+	// impossible to run. Browsers not supporting CSP at all are not a problem as they'll skip
+	// script-src restrictions completely.
+	QUnit[ /\bedge\/|iphone os [789]|android 4\./i.test( navigator.userAgent ) ? "skip" : "test" ]
+);
