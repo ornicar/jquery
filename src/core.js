@@ -18,11 +18,10 @@ define( [
 	"./var/support",
 	"./var/isFunction",
 	"./var/isWindow",
-	"./core/DOMEval",
 	"./core/toType"
 ], function( arr, document, getProto, slice, concat, push, indexOf,
 	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
-	support, isFunction, isWindow, DOMEval, toType ) {
+	support, isFunction, isWindow, toType ) {
 
 "use strict";
 
@@ -236,11 +235,6 @@ jQuery.extend( {
 			return false;
 		}
 		return true;
-	},
-
-	// Evaluates a script in a global context
-	globalEval: function( code, options ) {
-		DOMEval( code, { nonce: options && options.nonce } );
 	},
 
 	each: function( obj, callback ) {

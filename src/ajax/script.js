@@ -21,12 +21,6 @@ jQuery.ajaxSetup( {
 	},
 	contents: {
 		script: /\b(?:java|ecma)script\b/
-	},
-	converters: {
-		"text script": function( text ) {
-			jQuery.globalEval( text );
-			return text;
-		}
 	}
 } );
 
@@ -42,9 +36,6 @@ jQuery.ajaxPrefilter( "script", function( s ) {
 
 // Bind script tag hack transport
 jQuery.ajaxTransport( "script", function( s ) {
-
-	// This transport only deals with cross domain or forced-by-attrs requests
-	if ( s.crossDomain || s.scriptAttrs ) {
 		var script, callback;
 		return {
 			send: function( _, complete ) {
@@ -68,7 +59,6 @@ jQuery.ajaxTransport( "script", function( s ) {
 				}
 			}
 		};
-	}
 } );
 
 } );

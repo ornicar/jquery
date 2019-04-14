@@ -5,9 +5,8 @@ define( [
 	"./var/rtagName",
 	"./var/rscriptType",
 	"./wrapMap",
-	"./getAll",
-	"./setGlobalEval"
-], function( jQuery, toType, isAttached, rtagName, rscriptType, wrapMap, getAll, setGlobalEval ) {
+	"./getAll"
+], function( jQuery, toType, isAttached, rtagName, rscriptType, wrapMap, getAll) {
 
 "use strict";
 
@@ -82,11 +81,6 @@ function buildFragment( elems, context, scripts, selection, ignored ) {
 
 		// Append to fragment
 		tmp = getAll( fragment.appendChild( elem ), "script" );
-
-		// Preserve script evaluation history
-		if ( attached ) {
-			setGlobalEval( tmp );
-		}
 
 		// Capture executables
 		if ( scripts ) {

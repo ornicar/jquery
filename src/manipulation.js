@@ -10,13 +10,11 @@ define( [
 	"./manipulation/var/rscriptType",
 	"./manipulation/wrapMap",
 	"./manipulation/getAll",
-	"./manipulation/setGlobalEval",
 	"./manipulation/buildFragment",
 
 	"./data/var/dataPriv",
 	"./data/var/dataUser",
 	"./data/var/acceptData",
-	"./core/DOMEval",
 	"./core/nodeName",
 
 	"./core/init",
@@ -25,8 +23,8 @@ define( [
 	"./event"
 ], function( jQuery, isAttached, concat, isFunction, push, rcheckableType,
 	access, rtagName, rscriptType,
-	wrapMap, getAll, setGlobalEval, buildFragment, support,
-	dataPriv, dataUser, acceptData, DOMEval, nodeName ) {
+	wrapMap, getAll, buildFragment, support,
+	dataPriv, dataUser, acceptData, nodeName ) {
 
 "use strict";
 
@@ -173,9 +171,6 @@ function remove( elem, selector, keepData ) {
 		}
 
 		if ( node.parentNode ) {
-			if ( keepData && isAttached( node ) ) {
-				setGlobalEval( getAll( node, "script" ) );
-			}
 			node.parentNode.removeChild( node );
 		}
 	}
@@ -205,12 +200,6 @@ jQuery.extend( {
 			} else {
 				cloneCopyEvent( elem, clone );
 			}
-		}
-
-		// Preserve script evaluation history
-		destElements = getAll( clone, "script" );
-		if ( destElements.length > 0 ) {
-			setGlobalEval( destElements, !inPage && getAll( elem, "script" ) );
 		}
 
 		// Return the cloned set
