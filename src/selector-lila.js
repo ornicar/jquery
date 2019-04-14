@@ -249,9 +249,6 @@ jQuery.extend( {
 			bup = b && b.parentNode;
 		return a === bup || !!( bup && bup.nodeType === 1 && adown.contains( bup ) );
 	},
-	isXMLDoc: function( elem ) {
-    return false;
-	},
 	expr: {
 		attrHandle: {},
 		match: {
@@ -273,7 +270,7 @@ jQuery.extend( jQuery.find, {
 
 			// Don't get fooled by Object.prototype properties (jQuery #13807)
 			value = fn && hasOwn.call( jQuery.expr.attrHandle, name.toLowerCase() ) ?
-				fn( elem, name, jQuery.isXMLDoc( elem ) ) :
+				fn( elem, name ) :
 				undefined;
 		return value !== undefined ? value : elem.getAttribute( name );
 	}

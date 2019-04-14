@@ -32,12 +32,9 @@ jQuery.extend( {
 			return;
 		}
 
-		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
-
-			// Fix name and attach hooks
-			name = jQuery.propFix[ name ] || name;
-			hooks = jQuery.propHooks[ name ];
-		}
+    // Fix name and attach hooks
+    name = jQuery.propFix[ name ] || name;
+    hooks = jQuery.propHooks[ name ];
 
 		if ( value !== undefined ) {
 			if ( hooks && "set" in hooks &&
