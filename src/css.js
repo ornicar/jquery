@@ -10,14 +10,13 @@ define( [
 	"./css/curCSS",
 	"./css/adjustCSS",
 	"./css/addGetHookIf",
-	"./css/support",
 	"./css/finalPropName",
 
 	"./core/init",
 	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, access, camelCase, rcssNum, rnumnonpx, cssExpand,
-	getStyles, swap, curCSS, adjustCSS, addGetHookIf, support, finalPropName ) {
+	getStyles, swap, curCSS, adjustCSS, addGetHookIf, finalPropName ) {
 
 "use strict";
 
@@ -121,7 +120,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 
 		// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-4322).
 		// Fake content-box until we know it's needed to know the true value.
-		boxSizingNeeded = !support.boxSizingReliable() || extra,
+		boxSizingNeeded = extra,
 		isBorderBox = boxSizingNeeded &&
 			jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 		valueIsBorderBox = isBorderBox,
@@ -147,7 +146,7 @@ function getWidthOrHeight( elem, dimension, extra ) {
 	// Also use offsetWidth/offsetHeight for when box sizing is unreliable
 	// We use getClientRects() to check for hidden/disconnected.
 	// In those cases, the computed value can be trusted to be border-box
-	if ( ( !support.boxSizingReliable() && isBorderBox ||
+	if ( ( 
 		val === "auto" ||
 		!parseFloat( val ) && jQuery.css( elem, "display", false, styles ) === "inline" ) &&
 		elem.getClientRects().length ) {
@@ -256,11 +255,6 @@ jQuery.extend( {
 				value += ret && ret[ 3 ] || ( jQuery.cssNumber[ origName ] ? "" : "px" );
 			}
 
-			// background-* props affect original clone's values
-			if ( !support.clearCloneStyle && value === "" && name.indexOf( "background" ) === 0 ) {
-				style[ name ] = "inherit";
-			}
-
 			// If a hook was provided, use that value, otherwise just set the specified value
 			if ( !hooks || !( "set" in hooks ) ||
 				( value = hooks.set( elem, value, extra ) ) !== undefined ) {
@@ -353,13 +347,8 @@ jQuery.each( [ "height", "width" ], function( i, dimension ) {
 			var matches,
 				styles = getStyles( elem ),
 
-				// Only read styles.position if the test has a chance to fail
-				// to avoid forcing a reflow.
-				scrollboxSizeBuggy = !support.scrollboxSize() &&
-					styles.position === "absolute",
-
 				// To avoid forcing a reflow, only fetch boxSizing if we need it (gh-3991)
-				boxSizingNeeded = scrollboxSizeBuggy || extra,
+				boxSizingNeeded = extra,
 				isBorderBox = boxSizingNeeded &&
 					jQuery.css( elem, "boxSizing", false, styles ) === "border-box",
 				subtract = extra ?

@@ -250,11 +250,7 @@ jQuery.extend( {
 		return a === bup || !!( bup && bup.nodeType === 1 && adown.contains( bup ) );
 	},
 	isXMLDoc: function( elem ) {
-
-		// documentElement is verified for cases where it doesn't yet exist
-		// (such as loading iframes in IE - #4833)
-		var documentElement = elem && ( elem.ownerDocument || elem ).documentElement;
-		return documentElement ? documentElement.nodeName !== "HTML" : false;
+    return false;
 	},
 	expr: {
 		attrHandle: {},

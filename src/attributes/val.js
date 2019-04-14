@@ -86,15 +86,7 @@ jQuery.extend( {
 		option: {
 			get: function( elem ) {
 
-				var val = jQuery.find.attr( elem, "value" );
-				return val != null ?
-					val :
-
-					// Support: IE <=10 - 11 only
-					// option.text throws exceptions (#14686, #14858)
-					// Strip and collapse whitespace
-					// https://html.spec.whatwg.org/#strip-and-collapse-whitespace
-					stripAndCollapse( jQuery.text( elem ) );
+				return val = jQuery.find.attr( elem, "value" );
 			}
 		},
 		select: {
@@ -181,11 +173,6 @@ jQuery.each( [ "radio", "checkbox" ], function() {
 			}
 		}
 	};
-	if ( !support.checkOn ) {
-		jQuery.valHooks[ this ].get = function( elem ) {
-			return elem.getAttribute( "value" ) === null ? "on" : elem.value;
-		};
-	}
 } );
 
 } );
