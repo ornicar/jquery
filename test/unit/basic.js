@@ -1,4 +1,4 @@
-QUnit.module( "basic", { teardown: moduleTeardown } );
+QUnit.module( "basic", { afterEach: moduleTeardown } );
 
 if ( jQuery.ajax ) {
 QUnit.test( "ajax", function( assert ) {
@@ -8,7 +8,7 @@ QUnit.test( "ajax", function( assert ) {
 
 	jQuery.ajax( {
 		type: "GET",
-		url: url( "data/name.php?name=foo" ),
+		url: url( "mock.php?action=name&name=foo" ),
 		success: function( msg ) {
 			assert.strictEqual( msg, "bar", "Check for GET" );
 			done.pop()();
@@ -17,7 +17,7 @@ QUnit.test( "ajax", function( assert ) {
 
 	jQuery.ajax( {
 		type: "POST",
-		url: url( "data/name.php" ),
+		url: url( "mock.php?action=name" ),
 		data: "name=peter",
 		success: function( msg ) {
 			assert.strictEqual( msg, "pan", "Check for POST" );
@@ -25,7 +25,7 @@ QUnit.test( "ajax", function( assert ) {
 		}
 	} );
 
-	jQuery( "#first" ).load( url( "data/name.html" ), function() {
+	jQuery( "#first" ).load( url( "name.html" ), function() {
 		assert.ok( /^ERROR/.test( jQuery( "#first" ).text() ),
 			"Check if content was injected into the DOM" );
 		done.pop()();
@@ -76,25 +76,15 @@ QUnit.test( "show/hide", function( assert ) {
 }
 
 QUnit.test( "core", function( assert ) {
-	assert.expect( 25 );
+	assert.expect( 18 );
 
 	var elem = jQuery( "<div></div><span></span>" );
 
 	assert.strictEqual( elem.length, 2, "Correct number of elements" );
 	assert.strictEqual( jQuery.trim( "  hello   " ), "hello", "jQuery.trim" );
 
-	assert.strictEqual( jQuery.type( null ), "null", "jQuery.type(null)" );
-	assert.strictEqual( jQuery.type( undefined ), "undefined", "jQuery.type(undefined)" );
-	assert.strictEqual( jQuery.type( "a" ), "string", "jQuery.type(String)" );
-
 	assert.ok( jQuery.isPlainObject( { "a": 2 } ), "jQuery.isPlainObject(object)" );
 	assert.ok( !jQuery.isPlainObject( "foo" ), "jQuery.isPlainObject(String)" );
-
-	assert.ok( jQuery.isFunction( jQuery.noop ), "jQuery.isFunction(jQuery.noop)" );
-	assert.ok( !jQuery.isFunction( 2 ), "jQuery.isFunction(Number)" );
-
-	assert.ok( jQuery.isNumeric( "-2" ), "jQuery.isNumeric(String representing a number)" );
-	assert.ok( !jQuery.isNumeric( "" ), "jQuery.isNumeric(\"\")" );
 
 	assert.ok( jQuery.isXMLDoc( jQuery.parseXML(
 		"<?xml version='1.0' encoding='UTF-8'?><foo bar='baz'></foo>"
@@ -203,7 +193,9 @@ QUnit.test( "manipulation", function( assert ) {
 	);
 } );
 
-QUnit.test( "offset", function( assert ) {
+// Support: jsdom 13.2+
+// jsdom returns 0 for offset-related properties
+QUnit[ /jsdom\//.test( navigator.userAgent ) ? "skip" : "test" ]( "offset", function( assert ) {
 	assert.expect( 3 );
 
 	var parent = jQuery( "<div style='position:fixed;top:20px;'/>" ).appendTo( "#qunit-fixture" ),
