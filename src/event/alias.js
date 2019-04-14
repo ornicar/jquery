@@ -7,9 +7,7 @@ define( [
 
 "use strict";
 
-jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
-	"mousedown mouseup mousemove mouseover mouseout mouseenter mouseleave " +
-	"change select submit keydown keypress keyup contextmenu" ).split( " " ),
+jQuery.each( [ "focus", "click", "change", "select", "submit" ],
 	function( i, name ) {
 
 	// Handle event binding
@@ -18,12 +16,6 @@ jQuery.each( ( "blur focus focusin focusout resize scroll click dblclick " +
 			this.on( name, null, data, fn ) :
 			this.trigger( name );
 	};
-} );
-
-jQuery.fn.extend( {
-	hover: function( fnOver, fnOut ) {
-		return this.mouseenter( fnOver ).mouseleave( fnOut || fnOver );
-	}
 } );
 
 } );

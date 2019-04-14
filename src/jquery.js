@@ -9,7 +9,7 @@ define( [
 	"./queue",
 	"./attributes",
 	"./event",
-	"./event/focusin",
+	"./event/alias",
 	"./manipulation",
 	"./manipulation/_evalUrl",
 	"./wrap",
