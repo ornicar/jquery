@@ -71,6 +71,9 @@ jQuery.extend( {
 		return ret == null ? undefined : ret;
 	},
 
+	attrHooks: {
+	},
+
 	removeAttr: function( elem, value ) {
 		var name,
 			i = 0,

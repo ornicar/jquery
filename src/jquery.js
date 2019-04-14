@@ -9,7 +9,6 @@ define( [
 	"./queue",
 	"./attributes",
 	"./event",
-	"./event/alias",
 	"./manipulation",
 	"./manipulation/_evalUrl",
 	"./wrap",
@@ -21,6 +20,7 @@ define( [
 	"./ajax/load",
 	"./offset",
 	"./dimensions",
+	"./deprecated",
 	"./exports/min"
 ], function( jQuery ) {
 

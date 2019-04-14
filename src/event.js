@@ -27,6 +27,16 @@ function returnTrue() {
 
 function returnFalse() {
 	return false;
+
+}
+// Support: IE <=9 - 11+
+// focus() and blur() are asynchronous, except when they are no-op.
+// So expect focus to be synchronous when the element is already active,
+// and blur to be synchronous when the element is not already active.
+// (focus and blur are always synchronous in other supported browsers,
+// this just defines when we can count on it).
+function expectSync( elem, type ) {
+	return ( elem === document.activeElement ) === ( type === "focus" );
 }
 
 function on( elem, types, selector, data, fn, one ) {
