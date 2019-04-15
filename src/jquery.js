@@ -6,7 +6,6 @@ define( [
 	"./deferred",
 	"./core/ready",
 	"./data",
-	"./queue",
 	"./attributes",
 	"./event",
 	"./manipulation",
