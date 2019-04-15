@@ -1,8 +1,7 @@
 define( [
 	"../core",
-	"../var/support",
 	"../ajax"
-], function( jQuery, support ) {
+], function( jQuery ) {
 
 "use strict";
 

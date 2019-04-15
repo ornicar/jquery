@@ -23,7 +23,7 @@ define( [
 	"./event"
 ], function( jQuery, isAttached, concat, isFunction, push, rcheckableType,
 	access, rtagName, rscriptType,
-	wrapMap, getAll, buildFragment, support,
+	wrapMap, getAll, buildFragment,
 	dataPriv, dataUser, acceptData, nodeName ) {
 
 "use strict";
@@ -117,19 +117,6 @@ function domManip( collection, args, callback, ignored ) {
 		iNoClone = l - 1,
 		value = args[ 0 ],
 		valueIsFunction = isFunction( value );
-
-	// We can't cloneNode fragments that contain checked, in WebKit
-	if ( valueIsFunction ||
-			( l > 1 && typeof value === "string" &&
-				!support.checkClone && rchecked.test( value ) ) ) {
-		return collection.each( function( index ) {
-			var self = collection.eq( index );
-			if ( valueIsFunction ) {
-				args[ 0 ] = value.call( this, index, self.html() );
-			}
-			domManip( self, args, callback, ignored );
-		} );
-	}
 
 	if ( l ) {
 		fragment = buildFragment( args, collection[ 0 ].ownerDocument, false, collection, ignored );

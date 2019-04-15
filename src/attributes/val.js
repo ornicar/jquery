@@ -1,12 +1,11 @@
 define( [
 	"../core",
 	"../core/stripAndCollapse",
-	"./support",
 	"../core/nodeName",
 	"../var/isFunction",
 
 	"../core/init"
-], function( jQuery, stripAndCollapse, support, nodeName, isFunction ) {
+], function( jQuery, stripAndCollapse, nodeName, isFunction ) {
 
 "use strict";
 

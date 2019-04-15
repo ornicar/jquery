@@ -15,35 +15,25 @@ define( [
 	"./var/hasOwn",
 	"./var/fnToString",
 	"./var/ObjectFunctionString",
-	"./var/support",
 	"./var/isFunction",
 	"./var/isWindow",
 	"./core/toType"
 ], function( arr, document, getProto, slice, concat, push, indexOf,
 	class2type, toString, hasOwn, fnToString, ObjectFunctionString,
-	support, isFunction, isWindow, toType ) {
+	isFunction, isWindow, toType ) {
 
 "use strict";
 
 var
-	version = "3.1.1",
-
 	// Define a local copy of jQuery
 	jQuery = function( selector, context ) {
 
 		// The jQuery object is actually just the init constructor 'enhanced'
 		// Need init if jQuery is called (just allow error to be thrown if not included)
 		return new jQuery.fn.init( selector, context );
-	},
-
-	// Support: Android <=4.0 only
-	// Make sure we trim BOM and NBSP
-	rtrim = /^[\s\uFEFF\xA0]+|[\s\uFEFF\xA0]+$/g;
+	};
 
 jQuery.fn = jQuery.prototype = {
-
-	// The current version of jQuery being used
-	jquery: version,
 
 	constructor: jQuery,
 
@@ -196,7 +186,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 jQuery.extend( {
 
 	// Unique for each copy of jQuery on the page
-	expando: "jQuery" + ( version + Math.random() ).replace( /\D/g, "" ),
+	expando: "jQuery",
 
 	// Assume jQuery is ready without the ready module
 	isReady: true,
@@ -258,11 +248,10 @@ jQuery.extend( {
 		return obj;
 	},
 
-	// Support: Android <=4.0 only
 	trim: function( text ) {
 		return text == null ?
 			"" :
-			( text + "" ).replace( rtrim, "" );
+			text.trim();
 	},
 
 	// results is for internal usage only
@@ -355,11 +344,7 @@ jQuery.extend( {
 	},
 
 	// A global GUID counter for objects
-	guid: 1,
-
-	// jQuery.support is not used in Core but other projects attach their
-	// properties to it so it needs to exist.
-	support: support
+	guid: 1
 } );
 
 if ( typeof Symbol === "function" ) {
