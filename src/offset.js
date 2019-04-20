@@ -6,13 +6,12 @@ define( [
 	"./css/var/rnumnonpx",
 	"./css/curCSS",
 	"./css/addGetHookIf",
-	"./css/support",
 	"./var/isWindow",
 	"./core/init",
 	"./css",
 	"./selector" // contains
 ], function( jQuery, access, document, documentElement, rnumnonpx,
-             curCSS, addGetHookIf, support, isWindow ) {
+             curCSS, addGetHookIf, isWindow ) {
 
 "use strict";
 
@@ -26,14 +25,6 @@ jQuery.fn.extend( {
 
 		if ( !elem ) {
 			return;
-		}
-
-		// Return zeros for disconnected and hidden (display: none) elements (gh-2310)
-		// Support: IE <=11 only
-		// Running getBoundingClientRect on a
-		// disconnected node in IE throws an error
-		if ( !elem.getClientRects().length ) {
-			return { top: 0, left: 0 };
 		}
 
 		// Get document-relative position by adding viewport scroll to viewport-relative gBCR
@@ -76,27 +67,6 @@ jQuery.each( { scrollLeft: "pageXOffset", scrollTop: "pageYOffset" }, function( 
 			}
 		}, method, val, arguments.length );
 	};
-} );
-
-// Support: Safari <=7 - 9.1, Chrome <=37 - 49
-// Add the top/left cssHooks using jQuery.fn.position
-// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
-// Blink bug: https://bugs.chromium.org/p/chromium/issues/detail?id=589347
-// getComputedStyle returns percent when specified for top/left/bottom/right;
-// rather than make the css module depend on the offset module, just check for it here
-jQuery.each( [ "top", "left" ], function( i, prop ) {
-	jQuery.cssHooks[ prop ] = addGetHookIf( support.pixelPosition,
-		function( elem, computed ) {
-			if ( computed ) {
-				computed = curCSS( elem, prop );
-
-				// If curCSS returns percentage, fallback to offset
-				return rnumnonpx.test( computed ) ?
-					jQuery( elem ).position()[ prop ] + "px" :
-					computed;
-			}
-		}
-	);
 } );
 
 return jQuery;
