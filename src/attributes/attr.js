@@ -2,10 +2,9 @@ define( [
 	"../core",
 	"../core/access",
 	"../core/nodeName",
-	"./support",
 	"../var/rnothtmlwhite",
 	"../selector"
-], function( jQuery, access, nodeName, support, rnothtmlwhite ) {
+], function( jQuery, access, nodeName, rnothtmlwhite ) {
 
 "use strict";
 
@@ -72,19 +71,6 @@ jQuery.extend( {
 	},
 
 	attrHooks: {
-		type: {
-			set: function( elem, value ) {
-				if ( !support.radioValue && value === "radio" &&
-					nodeName( elem, "input" ) ) {
-					var val = elem.value;
-					elem.setAttribute( "type", value );
-					if ( val ) {
-						elem.value = val;
-					}
-					return value;
-				}
-			}
-		}
 	},
 
 	removeAttr: function( elem, value ) {

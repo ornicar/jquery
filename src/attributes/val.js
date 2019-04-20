@@ -1,11 +1,10 @@
 define( [
 	"../core",
 	"../core/stripAndCollapse",
-	"./support",
 	"../core/nodeName",
 
 	"../core/init"
-], function( jQuery, stripAndCollapse, support, nodeName ) {
+], function( jQuery, stripAndCollapse, nodeName ) {
 
 "use strict";
 
@@ -84,7 +83,7 @@ jQuery.extend( {
 	valHooks: {
 		option: {
 			get: function( elem ) {
-
+        return elem.value;
 				var val = jQuery.find.attr( elem, "value" );
 				return val != null ?
 					val :
@@ -180,11 +179,6 @@ jQuery.each( [ "radio", "checkbox" ], function() {
 			}
 		}
 	};
-	if ( !support.checkOn ) {
-		jQuery.valHooks[ this ].get = function( elem ) {
-			return elem.getAttribute( "value" ) === null ? "on" : elem.value;
-		};
-	}
 } );
 
 } );
