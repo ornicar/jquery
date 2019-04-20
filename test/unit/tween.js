@@ -8,18 +8,16 @@ if ( !jQuery.fx ) {
 var oldRaf = window.requestAnimationFrame;
 
 QUnit.module( "tween", {
-	setup: function() {
+	beforeEach: function() {
 		window.requestAnimationFrame = null;
 		this.sandbox = sinon.sandbox.create();
 		this.clock = this.sandbox.useFakeTimers( 505877050 );
 		this._oldInterval = jQuery.fx.interval;
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
-		jQuery.now = Date.now;
 	},
-	teardown: function() {
+	afterEach: function() {
 		this.sandbox.restore();
-		jQuery.now = Date.now;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;
@@ -80,7 +78,7 @@ QUnit.test( "jQuery.Tween - Default propHooks on elements", function( assert ) {
 
 	fakeTween.prop = "testOpti";
 	testElement.testOpti = 15;
-	cssStub.reset();
+	cssStub.resetHistory();
 
 	assert.equal( defaultHook.get( fakeTween ), 15, "Gets expected value not defined on style" );
 	assert.equal( cssStub.callCount, 0, "Did not call jQuery.css" );
@@ -101,7 +99,7 @@ QUnit.test( "jQuery.Tween - Default propHooks on elements", function( assert ) {
 	cssStub.returns( undefined );
 	assert.equal( defaultHook.get( fakeTween ), 0, "Uses 0 for undefined" );
 
-	cssStub.reset();
+	cssStub.resetHistory();
 
 	// Setters
 	styleStub = this.sandbox.stub( jQuery, "style" );
@@ -111,7 +109,7 @@ QUnit.test( "jQuery.Tween - Default propHooks on elements", function( assert ) {
 	assert.ok( styleStub.calledWith( testElement, "height", "10px" ),
 		"Calls jQuery.style with elem, prop, now+unit" );
 
-	styleStub.reset();
+	styleStub.resetHistory();
 	fakeTween.prop = "testMissing";
 
 	defaultHook.set( fakeTween );
@@ -129,7 +127,7 @@ QUnit.test( "jQuery.Tween - Default propHooks on elements", function( assert ) {
 	assert.equal( testElement.testMissing, 10, "And value was unchanged" );
 
 	stepSpy = jQuery.fx.step.test = this.sandbox.spy();
-	styleStub.reset();
+	styleStub.resetHistory();
 
 	fakeTween.prop = "test";
 	defaultHook.set( fakeTween );

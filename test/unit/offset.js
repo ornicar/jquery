@@ -46,7 +46,7 @@ var supportsFixedPosition, supportsScroll, alwaysScrollable,
 		);
 	};
 
-QUnit.module( "offset", { setup: function( assert ) {
+QUnit.module( "offset", { beforeEach: function( assert ) {
 	if ( typeof checkSupport === "function" ) {
 		checkSupport( assert );
 	}
@@ -56,7 +56,7 @@ QUnit.module( "offset", { setup: function( assert ) {
 	forceScroll.appendTo( "body" );
 	window.scrollTo( 1, 1 );
 	forceScroll.detach();
-}, teardown: moduleTeardown } );
+}, afterEach: moduleTeardown } );
 
 QUnit.test( "empty set", function( assert ) {
 	assert.expect( 2 );
@@ -756,9 +756,11 @@ QUnit.test( "offsetParent", function( assert ) {
 	assert.equal( header.length, 1, "Only one offsetParent found." );
 	assert.equal( header[ 0 ], document.documentElement, "The html element is the offsetParent of #qunit." );
 
+	jQuery( "#qunit-fixture" ).css( "position", "absolute" );
 	div = jQuery( "#nothiddendivchild" ).offsetParent();
 	assert.equal( div.length, 1, "Only one offsetParent found." );
 	assert.equal( div[ 0 ], document.getElementById( "qunit-fixture" ), "The #qunit-fixture is the offsetParent of #nothiddendivchild." );
+	jQuery( "#qunit-fixture" ).css( "position", "" );
 
 	jQuery( "#nothiddendiv" ).css( "position", "relative" );
 
@@ -771,12 +773,12 @@ QUnit.test( "offsetParent", function( assert ) {
 	assert.equal( div[ 0 ], document.documentElement, "The html element is the offsetParent of the body." );
 	assert.equal( div[ 1 ], jQuery( "#nothiddendiv" )[ 0 ], "The div is the offsetParent." );
 
-	area = jQuery( "#imgmap area" ).offsetParent();
-	assert.equal( area[ 0 ], document.documentElement, "The html element is the offsetParent of the body." );
+	area = jQuery( "<map name=\"imgmap\"><area shape=\"rect\" coords=\"0,0,200,50\"></map>" ).appendTo( "body" ).find( "area" );
+	assert.equal( area.offsetParent()[ 0 ], document.documentElement, "The html element is the offsetParent of a map area." );
+	area.remove();
 
 	div = jQuery( "<div>" ).css( { "position": "absolute" } ).appendTo( "body" );
 	assert.equal( div.offsetParent()[ 0 ], document.documentElement, "Absolutely positioned div returns html as offset parent, see #12139" );
-
 	div.remove();
 } );
 

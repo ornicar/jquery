@@ -2,7 +2,11 @@
 ( function() {
 	/* global loadTests: false */
 
-	var path = window.location.pathname.split( "test" )[ 0 ],
+	var FILEPATH = "/test/jquery.js",
+		activeScript = [].slice.call( document.getElementsByTagName( "script" ), -1 )[ 0 ],
+		parentUrl = activeScript && activeScript.src ?
+			activeScript.src.replace( /[?#].*/, "" ) + FILEPATH.replace( /[^/]+/g, ".." ) + "/" :
+			"../",
 		QUnit = window.QUnit || parent.QUnit,
 		require = window.require || parent.require,
 
@@ -16,11 +20,16 @@
 
 	// Define configuration parameters controlling how jQuery is loaded
 	if ( QUnit ) {
-		QUnit.config.urlConfig.push( {
-			id: "amd",
-			label: "Load with AMD",
-			tooltip: "Load the AMD jQuery file (and its dependencies)"
-		} );
+
+		// AMD loading is asynchronous and incompatible with synchronous test loading in Karma
+		if ( !window.__karma__ ) {
+			QUnit.config.urlConfig.push( {
+				id: "amd",
+				label: "Load with AMD",
+				tooltip: "Load the AMD jQuery file (and its dependencies)"
+			} );
+		}
+
 		QUnit.config.urlConfig.push( {
 			id: "dev",
 			label: "Load unminified",
@@ -32,7 +41,7 @@
 	// This doesn't apply to iframes because they synchronously expect jQuery to be there.
 	if ( urlParams.amd && window.QUnit ) {
 		require.config( {
-			baseUrl: path
+			baseUrl: parentUrl
 		} );
 		src = "src/jquery";
 
@@ -45,12 +54,7 @@
 
 	// Otherwise, load synchronously
 	} else {
-		document.write( "<script id='jquery-js' src='" + path + src + "'><\x2Fscript>" );
-
-		// Synchronous-only tests (other tests are loaded from the test page)
-		if ( typeof loadTests !== "undefined" ) {
-			document.write( "<script src='" + path + "test/unit/ready.js'><\x2Fscript>" );
-		}
+		document.write( "<script id='jquery-js' nonce='jquery+hardcoded+nonce' src='" + parentUrl + src + "'><\x2Fscript>" );
 	}
 
 } )();

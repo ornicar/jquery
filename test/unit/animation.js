@@ -12,20 +12,18 @@ var oldRaf = window.requestAnimationFrame,
 
 // This module tests jQuery.Animation and the corresponding 1.8+ effects APIs
 QUnit.module( "animation", {
-	setup: function() {
+	beforeEach: function() {
 		window.requestAnimationFrame = null;
 		this.sandbox = sinon.sandbox.create();
 		this.clock = this.sandbox.useFakeTimers( startTime );
 		this._oldInterval = jQuery.fx.interval;
 		jQuery.fx.step = {};
 		jQuery.fx.interval = 10;
-		jQuery.now = Date.now;
 		jQuery.Animation.prefilters = [ defaultPrefilter ];
 		jQuery.Animation.tweeners = { "*": [ defaultTweener ] };
 	},
-	teardown: function() {
+	afterEach: function() {
 		this.sandbox.restore();
-		jQuery.now = Date.now;
 		jQuery.fx.stop();
 		jQuery.fx.interval = this._oldInterval;
 		window.requestAnimationFrame = oldRaf;

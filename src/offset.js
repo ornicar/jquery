@@ -3,6 +3,7 @@ define( [
 	"./core/access",
 	"./var/document",
 	"./var/documentElement",
+	"./var/isFunction",
 	"./css/var/rnumnonpx",
 	"./css/curCSS",
 	"./css/addGetHookIf",
@@ -11,7 +12,7 @@ define( [
 	"./core/init",
 	"./css",
 	"./selector" // contains
-], function( jQuery, access, document, documentElement, rnumnonpx,
+], function( jQuery, access, document, documentElement, isFunction, rnumnonpx,
              curCSS, addGetHookIf, support, isWindow ) {
 
 "use strict";
