@@ -411,7 +411,9 @@ jQuery.extend( {
 	// A global GUID counter for objects
 	guid: 1,
 
-	now: Date.now
+	now: Date.now,
+
+  isArray: Array.isArray
 } );
 
 if ( typeof Symbol === "function" ) {
@@ -440,6 +442,60 @@ function isArrayLike( obj ) {
 	return type === "array" || length === 0 ||
 		typeof length === "number" && length > 0 && ( length - 1 ) in obj;
 }
+
+function update(els, action, cb) {
+  requestAnimationFrame(function() {
+    jQuery.each(els, function() {
+      action(this);
+      if (jQuery.isFunction(cb)) cb.apply(this);
+    });
+  });
+  return els;
+}
+jQuery.fn.toggleNone = function(show) {
+  update(this, function(el) {
+    if (show !== undefined) show = !show;
+    el.classList.toggle('none', show);
+  });
+  return this;
+};
+jQuery.fn.toggle = function(show, cb) {
+  jQuery.each(this, function() {
+    if (typeof show === 'undefined' || typeof show === 'number') {
+      show = !jQuery(this).is(':visible');
+    }
+    if (show) jQuery(this).show(0, cb);
+    else jQuery(this).hide(0, cb);
+  });
+  return this;
+};
+jQuery.fn.show = jQuery.fn.fadeIn = function(duration, cb) {
+  return update(this, function(el) {
+    el.style.display = 'block';
+    el.classList.remove('none');
+    el.style.opacity = 1;
+  }, cb);
+};
+jQuery.fn.hide = jQuery.fn.fadeOut = function(duration, cb) {
+  return update(this, function(el) {
+    el.style.display = 'none';
+  }, cb);
+};
+jQuery.fn.stop = function() {
+  // no animations to stop
+  return this;
+};
+jQuery.fn.animate = function(prop, speed, easing, callback) {
+  jQuery.fn.css(prop);
+  if (jQuery.isFunction(callback)) callback();
+  return this;
+};
+jQuery.fn.position = function() {
+  return {
+    left: this.offsetLeft,
+    top: this.offsetTop
+  };
+};
 
 return jQuery;
 } );
