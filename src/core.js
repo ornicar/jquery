@@ -452,13 +452,6 @@ function update(els, action, cb) {
   });
   return els;
 }
-jQuery.fn.toggleNone = function(show) {
-  update(this, function(el) {
-    if (show !== undefined) show = !show;
-    el.classList.toggle('none', show);
-  });
-  return this;
-};
 jQuery.fn.toggle = function(show, cb) {
   jQuery.each(this, function() {
     if (typeof show === 'undefined' || typeof show === 'number') {
