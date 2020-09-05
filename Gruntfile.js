@@ -158,25 +158,23 @@ module.exports = function( grunt ) {
 				},
 				options: {
 					preserveComments: false,
-					sourceMap: true,
+					sourceMap: false,
 					sourceMapName:
 						"dist/<%= grunt.option('filename').replace('.js', '.min.map') %>",
 					report: "min",
 					output: {
 						"ascii_only": true
 					},
-					banner: "/*! jQuery v<%= pkg.version %> | " +
-						"(c) jQuery Foundation | jquery.org/license | " +
-            "hacked for lichess.org on https://github.com/ornicar/jquery/tree/lila */",
+					banner: "",
 					compress: {
 						"hoist_funs": false,
-						loops: false,
-						unused: false,
+						loops: true,
+						unused: true,
 
 						// Support: IE <11
 						// typeofs transformation is unsafe for IE9-10
 						// See https://github.com/mishoo/UglifyJS2/issues/2198
-						typeofs: false
+						typeofs: true
 					}
 				}
 			}
