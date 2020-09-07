@@ -14,7 +14,6 @@ define( [
 	"./css/addGetHookIf",
 
 	"./core/init",
-	"./core/ready",
 	"./selector" // contains
 ], function( jQuery, pnum, access, rmargin, document, rcssNum, rnumnonpx, cssExpand,
 	getStyles, swap, curCSS, adjustCSS, addGetHookIf) {

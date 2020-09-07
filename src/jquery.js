@@ -4,8 +4,6 @@ define( [
 	"./selector",
 	"./traversing",
 	"./callbacks",
-	"./deferred",
-	"./core/ready",
 	"./data",
 	"./attributes",
 	"./event",
