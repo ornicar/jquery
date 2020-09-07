@@ -1,5 +1,6 @@
 define( [
 	"./core",
+	"./core/parseHTML",
 	"./selector",
 	"./traversing",
 	"./callbacks",
