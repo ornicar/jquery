@@ -3,7 +3,6 @@ define( [
 	"./core/parseHTML",
 	"./selector",
 	"./traversing",
-	"./callbacks",
 	"./data",
 	"./attributes",
 	"./event",
